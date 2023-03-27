@@ -1,6 +1,7 @@
 // CustomSelect.tsx
 import React from "react";
 import { useFormControls } from "../hooks/useFormControls";
+import { ControlProps } from "../types/ControlProps";
 import "./FormStyles.css";
 
 interface Option {
@@ -8,14 +9,11 @@ interface Option {
     label: string;
 }
 
-interface CustomSelectProps {
-    dataPath: string;
-    label: string;
-    options: Option[];
-    error: string | null;
+interface SelectControlProps extends ControlProps {
+    options: Array<{ value: string; label: string }>;
 }
 
-const CustomSelect: React.FC<CustomSelectProps> = ({ dataPath, label, options, error }) => {
+const SelectControl: React.FC<SelectControlProps> = ({ dataPath, label, options, error }) => {
     const { value, handleChange } = useFormControls({ dataPath });
 
     return (
@@ -34,4 +32,4 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ dataPath, label, options, e
     );
 };
 
-export default CustomSelect;
+export default SelectControl;

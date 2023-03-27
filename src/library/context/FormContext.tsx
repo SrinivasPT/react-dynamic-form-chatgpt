@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from "react";
-import { useImmerReducer } from "use-immer";
+import { FormAction } from "../types/ControlProps";
 
 type FormState = Record<string, any>;
 
@@ -10,41 +10,13 @@ interface FormContextProps {
 
 const FormContext = createContext<FormContextProps | null>(null);
 
-type FormAction =
-    | {
-          type: "SET_VALUE";
-          payload: {
-              key: string;
-              value: any;
-              pathHandler?: (path: string, obj: any, value: any) => void;
-          };
-      }
-    | { type: "RESET_FORM" };
-
-const formReducer = (draft: FormState, action: FormAction) => {
-    switch (action.type) {
-        case "SET_VALUE":
-            if (action.payload.pathHandler) {
-                action.payload.pathHandler(action.payload.key, draft, action.payload.value);
-            } else {
-                draft[action.payload.key] = action.payload.value;
-            }
-            return;
-        case "RESET_FORM":
-            return {};
-        default:
-            return;
-    }
-};
-
 interface FormProviderProps {
     children: React.ReactNode;
-    initialValue: FormState;
+    state: FormState;
+    dispatch: React.Dispatch<FormAction>;
 }
 
-export const FormProvider: React.FC<FormProviderProps> = ({ children, initialValue }) => {
-    const [state, dispatch] = useImmerReducer(formReducer, initialValue);
-
+export const FormProvider: React.FC<FormProviderProps> = ({ children, state, dispatch }) => {
     return <FormContext.Provider value={{ state, dispatch }}>{children}</FormContext.Provider>;
 };
 

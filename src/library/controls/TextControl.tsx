@@ -1,12 +1,10 @@
 import React from "react";
 import { useFormControls } from "../hooks/useFormControls";
+import { ControlProps } from "../types/ControlProps";
 import "./FormStyles.css";
 
-interface TextInputProps {
-    dataPath: string;
+interface TextInputProps extends ControlProps {
     type: string;
-    label: string;
-    error: string | null;
 }
 
 const TextControl: React.FC<TextInputProps> = ({ dataPath, type, label, error }) => {

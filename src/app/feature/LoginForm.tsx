@@ -1,43 +1,34 @@
 // CustomForm.tsx
 import React from "react";
+import { useImmerReducer } from "use-immer";
 import { FormProvider } from "../../library/context/FormContext";
-import TextControl from "../../library/controls/TextControl";
-import { useFormValidation } from "../../library/hooks/useFormValidation";
+import { formReducer } from "../../library/context/FormReducer";
+import SmartControl from "../../library/factory/SmartControl";
 
-const validationRules = {
-    // ... previous validation rules
-    select: (value: string) => {
-        return value !== "" ? null : "Select an option";
+const initialState = {
+    formData: {
+        firstName: "",
+        lastName: "",
     },
 };
 
-const initialValues = {
-    // ... previous initial values
-    select: "",
-    radio: "",
-};
-
 const LoginForm: React.FC = () => {
-    const { values, errors, handleChange, handleSubmit } = useFormValidation(initialValues, validationRules);
+    const [state, dispatch] = useImmerReducer(formReducer, initialState);
+    const handleSubmit = (event: React.FormEvent) => {
+        event.preventDefault();
+        console.log(state.formData);
+    };
 
     return (
-        <FormProvider initialValue={{ profile: {} }}>
+        <FormProvider state={state} dispatch={dispatch}>
             <form onSubmit={handleSubmit}>
-                {/* <CustomSelect
-                    label="Select"
-                    options={[
-                        { value: "option1", label: "Option 1" },
-                        { value: "option2", label: "Option 2" },
-                        { value: "option3", label: "Option 3" },
-                    ]}
-                    error={errors.select}
-                    dataPath={""}
-                /> */}
-                <TextControl dataPath={"profile.firstName"} type={"text"} label={"First Name"} error={null} />
-                <TextControl dataPath={"profile.lastName"} type={"text"} label={"Last Name"} error={null} />
-                <button color="primary" type="submit">
-                    Submit
-                </button>
+                {state && (
+                    <div>
+                        <SmartControl type="text" dataPath="formData.firstName" label="First Name" />
+                        <SmartControl type="text" dataPath="formData.lastName" label="Last Name" />
+                        <button type="submit">Submit</button>
+                    </div>
+                )}
             </form>
         </FormProvider>
     );
